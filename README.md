@@ -1,0 +1,146 @@
+
+# Tournament Manager
+
+A comprehensive tournament management system with admin and user interfaces for creating, managing, and participating in gaming tournaments.
+
+## Features
+
+### Admin Panel
+- **Dashboard**: Overview of tournaments, users, and participants with real-time statistics
+- **Tournament Management**: Create, edit, and delete tournaments with detailed information
+- **User Management**: View and manage all registered users with search functionality
+- **Settings**: Admin preferences including password change, notifications, and theme selection
+- **Full-Screen Mode**: Toggle between normal and full-screen views for focused work
+- **Remember Me**: Persistent login sessions to avoid repeated authentication
+- **Activity Tracking**: Monitor recent system activities and changes
+
+### User Interface
+- **Authentication**: Secure login and registration system with Game ID integration
+- **Tournament Browsing**: Filter tournaments by game, type, and date
+- **Tournament Details**: View comprehensive tournament information
+- **Registration**: Join tournaments with team and Game ID information
+- **User Profile**: Manage personal account settings and preferences
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+
+## Screenshots
+
+### Admin Dashboard
+![Admin Dashboard](https://via.placeholder.com/800x400?text=Admin+Dashboard+Screenshot)
+- Real-time statistics cards
+- Recent activity feed
+- Quick navigation to all features
+
+### Tournament Management
+![Tournament Management](https://via.placeholder.com/800x400?text=Tournament+Management+Screenshot)
+- Create new tournaments with detailed information
+- View all tournaments with participant lists
+- Edit or delete existing tournaments
+
+### User Interface
+![User Interface](https://via.placeholder.com/800x400?text=User+Interface+Screenshot)
+- Browse available tournaments
+- Filter by game, type, and date
+- Join tournaments with registration form
+
+## Installation
+
+### Prerequisites
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- Firebase account (for database services)
+
+### Setup
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/tournament-manager.git
+   cd tournament-manager
+   ```
+
+2. Set up Firebase:
+   - Create a new project at [Firebase Console](https://console.firebase.google.com/)
+   - Enable Realtime Database
+   - Copy your Firebase configuration
+
+3. Configure Firebase:
+   - Open `admin.html` and `user.html`
+   - Replace the Firebase configuration object with your own:
+     ```javascript
+     const firebaseConfig = {
+         apiKey: "YOUR_API_KEY",
+         authDomain: "YOUR_AUTH_DOMAIN",
+         projectId: "YOUR_PROJECT_ID",
+         storageBucket: "YOUR_STORAGE_BUCKET",
+         messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+         appId: "YOUR_APP_ID"
+     };
+     ```
+
+4. Deploy to web hosting:
+   - Use Firebase Hosting, GitHub Pages, or any static web hosting service
+   - Ensure both admin and user interfaces are accessible
+
+## Usage
+
+### Admin Panel
+1. Access the admin interface at your deployed URL
+2. Log in with admin credentials (default: username: `pranay`, password: `pranay`)
+3. Use the sidebar to navigate between different sections
+4. Create tournaments by filling out the form with all required details
+5. Monitor user registrations and tournament participation
+6. Toggle full-screen mode using the button in the bottom-right corner
+
+### User Interface
+1. Access the user interface at your deployed URL
+2. Register a new account with your email, password, and Game ID
+3. Browse available tournaments using the filter options
+4. Click "View & Join" on any tournament to see details and register
+5. Manage your profile through the settings menu
+
+## Technologies Used
+
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **UI Framework**: Custom CSS with Font Awesome icons
+- **Database**: Firebase Realtime Database
+- **Authentication**: Custom implementation with Firebase
+- **Design**: Responsive design with mobile optimization
+- **Icons**: Font Awesome 6.4.0
+- **Fonts**: Google Fonts (Poppins)
+
+## Project Structure
+
+```
+tournament-manager/
+├── admin.html           # Admin interface
+├── user.html            # User interface
+├── README.md            # This file
+└── assets/              # Static assets (if any)
+    ├── css/            # Custom CSS files
+    ├── js/             # Custom JavaScript files
+    └── images/         # Images and icons
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+Your Name - [@yourusername](https://twitter.com/yourusername) - email@example.com
+
+Project Link: [https://github.com/yourusername/tournament-manager](https://github.com/yourusername/tournament-manager)
+
+## Acknowledgements
+
+- [Font Awesome](https://fontawesome.com/) for the amazing icons
+- [Google Fonts](https://fonts.google.com/) for the Poppins font
+- [Firebase](https://firebase.google.com/) for the backend services
+- [Unsplash](https://unsplash.com/) for placeholder images (if used)
