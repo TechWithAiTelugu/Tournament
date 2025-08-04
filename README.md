@@ -3,8 +3,7 @@
 
 A comprehensive tournament management system with admin and user interfaces for creating, managing, and participating in gaming tournaments.
 
-[![Watch the video](https://img.youtube.com/vi/FM_e1K6ejz0/hqdefault.jpg)](https://youtu.be/FM_e1K6ejz0?si=F490eqcDby-PG9mP)
-
+🎥 [Watch on YouTube](https://youtu.be/FM_e1K6ejz0?si=F490eqcDby-PG9mP)
 
 ## Features
 
