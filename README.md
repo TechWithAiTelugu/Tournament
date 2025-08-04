@@ -25,19 +25,19 @@ A comprehensive tournament management system with admin and user interfaces for 
 ## Screenshots
 
 ### Admin Dashboard
-![Admin Dashboard](https://via.placeholder.com/800x400?text=Admin+Dashboard+Screenshot)
+![Admin Dashboard](https://techwithaitelugu.github.io/Tournament/images/Screenshot%20(196).png)
 - Real-time statistics cards
 - Recent activity feed
 - Quick navigation to all features
 
 ### Tournament Management
-![Tournament Management](https://via.placeholder.com/800x400?text=Tournament+Management+Screenshot)
+![Tournament Management](https://techwithaitelugu.github.io/Tournament/images/Screenshot%20(198).png)
 - Create new tournaments with detailed information
 - View all tournaments with participant lists
 - Edit or delete existing tournaments
 
 ### User Interface
-![User Interface](https://via.placeholder.com/800x400?text=User+Interface+Screenshot)
+![User Interface](https://techwithaitelugu.github.io/Tournament/images/Screenshot%20(197).png)
 - Browse available tournaments
 - Filter by game, type, and date
 - Join tournaments with registration form
@@ -112,21 +112,8 @@ tournament-manager/
 ├── admin.html           # Admin interface
 ├── user.html            # User interface
 ├── README.md            # This file
-└── assets/              # Static assets (if any)
-    ├── css/            # Custom CSS files
-    ├── js/             # Custom JavaScript files
-    └── images/         # Images and icons
+├── images/         # Images and icons
 ```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ## License
 
