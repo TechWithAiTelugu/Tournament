@@ -3,6 +3,9 @@
 
 A comprehensive tournament management system with admin and user interfaces for creating, managing, and participating in gaming tournaments.
 
+[![Watch the video](https://img.youtube.com/vi/FM_e1K6ejz0/hqdefault.jpg)](https://youtu.be/FM_e1K6ejz0?si=F490eqcDby-PG9mP)
+
+
 ## Features
 
 ### Admin Panel
@@ -51,7 +54,7 @@ A comprehensive tournament management system with admin and user interfaces for 
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/tournament-manager.git
+   git clone https://github.com/TechWithAiTelugu/Tournament.git
    cd tournament-manager
    ```
 
@@ -82,7 +85,7 @@ A comprehensive tournament management system with admin and user interfaces for 
 
 ### Admin Panel
 1. Access the admin interface at your deployed URL
-2. Log in with admin credentials (default: username: `pranay`, password: `pranay`)
+2. Log in with admin credentials (default: username: `techwithai`, password: `telugu`)
 3. Use the sidebar to navigate between different sections
 4. Create tournaments by filling out the form with all required details
 5. Monitor user registrations and tournament participation
@@ -121,9 +124,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-Your Name - [@yourusername](https://twitter.com/yourusername) - email@example.com
+Your Name - [@techwithai](https://youtube.com/@techwitai1?si=nbFi4SpBRd-RiOuf)
 
-Project Link: [https://github.com/yourusername/tournament-manager](https://github.com/yourusername/tournament-manager)
+Project Link: [https://github.com/yourusername/tournament-manager](https://github.com/TechWithAiTelugu/Tournament)
 
 ## Acknowledgements
 
