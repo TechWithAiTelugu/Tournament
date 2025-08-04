@@ -132,4 +132,3 @@ Project Link: [https://github.com/yourusername/tournament-manager](https://githu
 - [Font Awesome](https://fontawesome.com/) for the amazing icons
 - [Google Fonts](https://fonts.google.com/) for the Poppins font
 - [Firebase](https://firebase.google.com/) for the backend services
-- [Unsplash](https://unsplash.com/) for placeholder images (if used)
