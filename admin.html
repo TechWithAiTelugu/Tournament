@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin - Tournament Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --secondary-dark: #1a2a6c;
+            --success: #2ecc71;
+            --success-dark: #27ae60;
+            --danger: #e74c3c;
+            --danger-dark: #c0392b;
+            --warning: #f39c12;
+            --warning-dark: #d68910;
+            --info: #1abc9c;
+            --info-dark: #16a085;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --white: #ffffff;
+            --gray: #95a5a6;
+            --gray-dark: #7f8c8d;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-radius: 12px;
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 70px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--secondary-dark), var(--secondary));
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--secondary), var(--secondary-dark));
+            color: var(--light);
+            height: 100vh;
+            position: fixed;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 1.7em;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .sidebar-header span {
+            display: none;
+        }
+
+        .sidebar-header i {
+            color: var(--primary);
+            font-size: 1.2em;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--light);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-menu {
+            padding: 10px 0;
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: var(--light);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: var(--primary);
+        }
+
+        .sidebar-menu a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background-color: var(--primary);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 15px;
+            width: 24px;
+            text-align: center;
+            font-size: 1.2em;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .sidebar-menu a i {
+            margin-right: 0;
+            font-size: 1.4em;
+        }
+
+        .sidebar-menu a span {
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .sidebar-menu a span {
+            display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            height: 100vh;
+            width: 85vw;
+            overflow-y: auto;
+            background-color: #f0f2f5;
+            transition: var(--transition);
+        }
+
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+            padding: 30px;
+            min-height: 100%;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            color: var(--dark);
+            font-size: 2.2em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            color: var(--primary);
+        }
+
+        .admin-section {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .admin-section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .admin-section:hover::before {
+            opacity: 1;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95em;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        button {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #1f639a);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--gray), var(--gray-dark));
+            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--gray-dark), #6c7b7d);
+            box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, var(--danger-dark), #a93226);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Tournament Entry */
+        .tournament-entry {
+            border: 1px solid #e9e9e9;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: var(--border-radius);
+            background-color: var(--white);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tournament-entry::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            transform-origin: bottom;
+        }
+
+        .tournament-entry:hover::before {
+            transform: scaleY(1);
+        }
+
+        .tournament-entry:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-3px);
+        }
+
+        .tournament-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .tournament-entry h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .tournament-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .tournament-thumbnail:hover {
+            transform: scale(1.02);
+        }
+
+        .tournament-entry .date {
+            font-size: 0.95em;
+            color: var(--gray-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tournament-entry .date i {
+            color: var(--primary);
+        }
+
+        .tournament-entry h4 {
+            margin: 20px 0 15px 0;
+            color: var(--success);
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tournament-entry h4 i {
+            color: var(--success);
+        }
+
+        .participant-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .participant-list li {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .participant-list li:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .participant-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .participant-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .tournament-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            background: linear-gradient(135deg, var(--secondary-dark), var(--secondary), var(--secondary-dark));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 2000;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo {
+            margin-bottom: 25px;
+            font-size: 3em;
+            color: var(--primary);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .login-box h1 {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            color: var(--secondary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-box input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .remember-me label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dark);
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .error {
+            color: var(--danger);
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* User List */
+        .user-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--info), var(--info-dark));
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            transform-origin: bottom;
+        }
+
+        .user-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .user-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--info), var(--info-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-info h3 {
+            margin: 0 0 5px 0;
+            color: var(--secondary);
+            font-size: 1.2em;
+        }
+
+        .user-info p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 0.95em;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--white), #f8f9fa);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            color: var(--white);
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        .stat-icon.green {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+        }
+
+        .stat-icon.purple {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .stat-icon.orange {
+            background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1);
+        }
+
+        .stat-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.8em;
+            color: var(--secondary);
+        }
+
+        .stat-info p {
+            margin: 0;
+            color: var(--gray-dark);
+            font-size: 0.95em;
+        }
+
+        /* Settings */
+        .settings-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-section h3 i {
+            color: var(--primary);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 5px solid var(--success);
+        }
+
+        .notification.error {
+            border-left: 5px solid var(--danger);
+        }
+
+        .notification.warning {
+            border-left: 5px solid var(--warning);
+        }
+
+        .notification.info {
+            border-left: 5px solid var(--info);
+        }
+
+        .notification i {
+            font-size: 1.5em;
+        }
+
+        .notification.success i {
+            color: var(--success);
+        }
+
+        .notification.error i {
+            color: var(--danger);
+        }
+
+        .notification.warning i {
+            color: var(--warning);
+        }
+
+        .notification.info i {
+            color: var(--info);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .notification-message {
+            color: var(--gray-dark);
+            font-size: 0.9em;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .notification-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--dark);
+        }
+
+        /* Full Screen Main Content */
+        .main-content.fullscreen {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .main-content.fullscreen .page {
+            padding: 30px;
+        }
+
+        .toggle-fullscreen {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            z-index: 1001;
+            transition: var(--transition);
+        }
+
+        .toggle-fullscreen:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #1f639a);
+            transform: scale(1.1);
+        }
+
+        /* Search Box */
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .search-box:focus-within {
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .search-box input {
+            border: none;
+            padding: 12px 15px;
+            width: 250px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .search-box button {
+            background: var(--primary);
+            border: none;
+            color: var(--white);
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .search-box button:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .loading-content .loading-spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 15px;
+        }
+
+        /* Activity List */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .activity-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+
+        .activity-time {
+            font-size: 0.85em;
+            color: var(--gray-dark);
+        }
+
+        /* Image Upload Preview */
+        .image-upload-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .image-upload-preview {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #e1e5eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .image-upload-preview:hover {
+            border-color: var(--primary);
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .image-upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-upload-placeholder {
+            text-align: center;
+            color: var(--gray-dark);
+        }
+
+        .image-upload-placeholder i {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: var(--gray);
+        }
+
+        .image-upload-input {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-collapsed-width);
+            }
+            
+            .sidebar-header span {
+                display: none;
+            }
+            
+            .sidebar-menu a span {
+                display: none;
+            }
+            
+            .sidebar-menu a i {
+                font-size: 1.3em;
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: var(--sidebar-collapsed-width);
+                width: calc(100vw - var(--sidebar-collapsed-width));
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .tournament-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-box input {
+                width: 150px;
+            }
+            
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Login Screen -->
+<div id="login-page" class="login-container">
+    <div class="login-box">
+        <div class="login-logo">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <h1>Admin Login</h1>
+        <form id="login-form">
+            <div class="error" id="login-error" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span></span>
+            </div>
+            <div class="form-group">
+                <input type="text" id="admin-username" placeholder="Username" required />
+            </div>
+            <div class="form-group">
+                <input type="password" id="admin-password" placeholder="Password" required />
+            </div>
+            <div class="remember-me">
+                <label>
+                    <input type="checkbox" id="remember-me"> Remember Me
+                </label>
+                <a href="#" class="forgot-password">Forgot Password?</a>
+            </div>
+            <button type="submit">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Dashboard (Hidden until login) -->
+<div id="dashboard" style="display: none;">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar-header">
+            <i class="fas fa-trophy"></i>
+            <span>Tournament Admin</span>
+        </div>
+        <div class="sidebar-menu">
+            <a href="#" class="active" data-page="dashboard">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a href="#" data-page="tournaments">
+                <i class="fas fa-trophy"></i> <span>Tournaments</span>
+            </a>
+            <a href="#" data-page="users">
+                <i class="fas fa-users"></i> <span>View Users</span>
+            </a>
+            <a href="#" data-page="settings">
+                <i class="fas fa-cog"></i> <span>Settings</span>
+            </a>
+            <a href="#" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="container">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <div class="page-header">
+                    <h1><i class="fas fa-home"></i> Dashboard</h1>
+                    <div class="date-time" id="date-time"></div>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="tournaments-count">0</h3>
+                            <p>Total Tournaments</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="users-count">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="participants-count">0</h3>
+                            <p>Total Participants</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="active-tournaments-count">0</h3>
+                            <p>Active Tournaments</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-line"></i> Recent Activity
+                    </h2>
+                    <div id="recent-activity">
+                        <p>Loading recent activity...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tournaments Page -->
+            <div id="tournaments-page" class="page">
+                <div class="page-header">
+                    <h1><i class="fas fa-trophy"></i> Manage Tournaments</h1>
+                    <button id="add-tournament-btn">
+                        <i class="fas fa-plus"></i> Add New
+                    </button>
+                </div>
+                
+                <div class="admin-section" id="add-tournament-section" style="display: none;">
+                    <h2 class="section-title">
+                        <i class="fas fa-plus-circle"></i> Add New Tournament
+                    </h2>
+                    <form id="add-tournament-form">
+                        <div class="image-upload-container">
+                            <label for="tournament-thumbnail" class="image-upload-preview">
+                                <img id="thumbnail-preview" style="display: none;" alt="Tournament thumbnail">
+                                <div class="image-upload-placeholder" id="thumbnail-placeholder">
+                                    <i class="fas fa-image"></i>
+                                    <p>Click to upload tournament thumbnail</p>
+                                </div>
+                            </label>
+                            <input type="file" id="tournament-thumbnail" class="image-upload-input" accept="image/*">
+                            <input type="hidden" id="thumbnail-url" name="thumbnailUrl">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tournament-name">Tournament Name</label>
+                                <input type="text" id="tournament-name" placeholder="Enter tournament name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tournament-date">Date</label>
+                                <input type="date" id="tournament-date" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tournament-game">Game</label>
+                                <select id="tournament-game" required>
+                                    <option value="">Select Game</option>
+                                    <option value="valorant">Valorant</option>
+                                    <option value="csgo">CS:GO</option>
+                                    <option value="lol">League of Legends</option>
+                                    <option value="dota">Dota 2</option>
+                                    <option value="fortnite">Fortnite</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tournament-type">Tournament Type</label>
+                                <select id="tournament-type" required>
+                                    <option value="">Select Type</option>
+                                    <option value="solo">Solo</option>
+                                    <option value="duo">Duo</option>
+                                    <option value="squad">Squad</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tournament-description">Description</label>
+                            <textarea id="tournament-description" placeholder="Enter tournament description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="tournament-prize">Prize Pool</label>
+                            <input type="text" id="tournament-prize" placeholder="Enter prize pool (e.g., $1000)">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <button type="submit">
+                                    <i class="fas fa-save"></i> Save Tournament
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" id="cancel-tournament-btn" class="btn-secondary">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="admin-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-list"></i> All Tournaments
+                    </h2>
+                    <div id="admin-tournaments-list">
+                        <p>Loading tournaments...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View Users Page -->
+            <div id="users-page" class="page">
+                <div class="page-header">
+                    <h1><i class="fas fa-users"></i> All Registered Users</h1>
+                    <div class="search-box">
+                        <input type="text" id="user-search" placeholder="Search users...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <div id="all-users-list">
+                        <p>Loading users...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Page -->
+            <div id="settings-page" class="page">
+                <div class="page-header">
+                    <h1><i class="fas fa-cog"></i> Settings</h1>
+                </div>
+                
+                <div class="admin-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-user-shield"></i> Admin Settings
+                    </h2>
+                    <div class="settings-section">
+                        <h3><i class="fas fa-key"></i> Change Password</h3>
+                        <form id="change-password-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" placeholder="Enter current password">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" placeholder="Enter new password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password" placeholder="Confirm new password">
+                            </div>
+                            <button type="submit">
+                                <i class="fas fa-save"></i> Update Password
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="email-notifications" checked> Email Notifications
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="push-notifications" checked> Push Notifications
+                            </label>
+                        </div>
+                        <button>
+                            <i class="fas fa-save"></i> Save Preferences
+                        </button>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h3><i class="fas fa-palette"></i> Theme Settings</h3>
+                        <div class="form-group">
+                            <label for="theme-select">Select Theme</label>
+                            <select id="theme-select">
+                                <option value="default">Default Blue</option>
+                                <option value="dark">Dark Mode</option>
+                                <option value="green">Green</option>
+                                <option value="purple">Purple</option>
+                            </select>
+                        </div>
+                        <button>
+                            <i class="fas fa-save"></i> Apply Theme
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fullscreen Toggle Button -->
+    <button class="toggle-fullscreen" id="toggle-fullscreen" title="Toggle Fullscreen">
+        <i class="fas fa-expand"></i>
+    </button>
+</div>
+
+<!-- Notification -->
+<div id="notification" class="notification">
+    <i class="fas fa-check-circle"></i>
+    <div class="notification-content">
+        <div class="notification-title"></div>
+        <div class="notification-message"></div>
+    </div>
+    <button class="notification-close">
+        <i class="fas fa-times"></i>
+    </button>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <p>Loading, please wait...</p>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+<script>
+    // Firebase Config
+const firebaseConfig = {
+    apiKey: "add-your-api-key",
+    authDomain: "add-your-auth-domain",
+    projectId: "add-your-project-id",
+    storageBucket: "add-your-storage-bucket",
+    messagingSenderId: "add-your-messaging-sender-id",
+    appId: "add-your-app-id",
+    measurementId: "add-your-measurement-id"
+};
+
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const storage = firebase.storage();
+    const tournamentsRef = database.ref('tournaments');
+    const usersRef = database.ref('users');
+    const activityRef = database.ref('activity');
+    
+    // DOM Elements
+    const loginPage = document.getElementById('login-page');
+    const dashboard = document.getElementById('dashboard');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const logoutBtn = document.getElementById('logout-btn');
+    const rememberMeCheckbox = document.getElementById('remember-me');
+    const mainContent = document.getElementById('main-content');
+    const toggleFullscreenBtn = document.getElementById('toggle-fullscreen');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    
+    // Image upload elements
+    const tournamentThumbnail = document.getElementById('tournament-thumbnail');
+    const thumbnailPreview = document.getElementById('thumbnail-preview');
+    const thumbnailPlaceholder = document.getElementById('thumbnail-placeholder');
+    const thumbnailUrl = document.getElementById('thumbnail-url');
+    
+    // Page Navigation
+    const pages = document.querySelectorAll('.page');
+    const navLinks = document.querySelectorAll('.sidebar-menu a[data-page]');
+    
+    // Show loading overlay
+    function showLoading() {
+        loadingOverlay.classList.add('active');
+    }
+    
+    // Hide loading overlay
+    function hideLoading() {
+        loadingOverlay.classList.remove('active');
+    }
+    
+    // Check if user is already logged in
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedLogin = localStorage.getItem('adminLogin');
+        if (savedLogin) {
+            const loginData = JSON.parse(savedLogin);
+            if (loginData.remember) {
+                loginPage.style.display = 'none';
+                dashboard.style.display = 'block';
+                showNotification('success', 'Welcome Back', 'You have been automatically logged in.');
+                loadDashboardStats();
+            }
+        }
+    });
+    
+    // Authentication
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('admin-username').value;
+        const password = document.getElementById('admin-password').value;
+        const remember = rememberMeCheckbox.checked;
+        
+        showLoading();
+        
+        // Simulate API call
+        setTimeout(() => {
+            hideLoading();
+            
+            if (username === 'techwithai' && password === 'telugu') {
+                // Save login state if remember me is checked
+                if (remember) {
+                    const loginData = {
+                        username: username,
+                        timestamp: new Date().toISOString(),
+                        remember: true
+                    };
+                    localStorage.setItem('adminLogin', JSON.stringify(loginData));
+                } else {
+                    localStorage.removeItem('adminLogin');
+                }
+                
+                loginPage.style.display = 'none';
+                dashboard.style.display = 'block';
+                showNotification('success', 'Login Successful', 'Welcome to the admin dashboard!');
+                loadDashboardStats();
+            } else {
+                loginError.style.display = 'flex';
+                loginError.querySelector('span').textContent = 'Invalid credentials!';
+            }
+        }, 1000);
+    });
+    
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('adminLogin');
+        dashboard.style.display = 'none';
+        loginPage.style.display = 'flex';
+        loginForm.reset();
+        loginError.style.display = 'none';
+        showNotification('success', 'Logged Out', 'You have been successfully logged out.');
+    });
+    
+    // Fullscreen Toggle
+    toggleFullscreenBtn.addEventListener('click', () => {
+        mainContent.classList.toggle('fullscreen');
+        const icon = toggleFullscreenBtn.querySelector('i');
+        
+        if (mainContent.classList.contains('fullscreen')) {
+            icon.className = 'fas fa-compress';
+            showNotification('success', 'Fullscreen Mode', 'You are now in fullscreen mode.');
+        } else {
+            icon.className = 'fas fa-expand';
+            showNotification('success', 'Normal Mode', 'You have exited fullscreen mode.');
+        }
+    });
+    
+    // Sidebar Toggle
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+        
+        const icon = sidebarToggle.querySelector('i');
+        if (sidebar.classList.contains('collapsed')) {
+            icon.className = 'fas fa-chevron-right';
+        } else {
+            icon.className = 'fas fa-bars';
+        }
+    });
+    
+    // Navigation
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pageName = e.target.closest('a').getAttribute('data-page');
+            
+            // Update active class
+            navLinks.forEach(l => l.classList.remove('active'));
+            e.target.closest('a').classList.add('active');
+            
+            // Show selected page
+            pages.forEach(p => p.classList.remove('active'));
+            document.getElementById(`${pageName}-page`).classList.add('active');
+            
+            // Load page-specific data
+            if (pageName === 'dashboard') {
+                loadDashboardStats();
+                loadRecentActivity();
+            } else if (pageName === 'tournaments') {
+                loadTournaments();
+            } else if (pageName === 'users') {
+                loadUsers();
+            }
+        });
+    });
+    
+    // Dashboard Stats
+    function loadDashboardStats() {
+        showLoading();
+        
+        tournamentsRef.once('value').then(snapshot => {
+            const tournaments = snapshot.val();
+            const tournamentsCount = tournaments ? Object.keys(tournaments).length : 0;
+            document.getElementById('tournaments-count').textContent = tournamentsCount;
+            
+            let participantsCount = 0;
+            let activeTournamentsCount = 0;
+            
+            if (tournaments) {
+                Object.values(tournaments).forEach(t => {
+                    if (t.participants) {
+                        participantsCount += Object.keys(t.participants).length;
+                    }
+                    
+                    const tournamentDate = new Date(t.date);
+                    const today = new Date();
+                    if (tournamentDate >= today) {
+                        activeTournamentsCount++;
+                    }
+                });
+            }
+            
+            document.getElementById('participants-count').textContent = participantsCount;
+            document.getElementById('active-tournaments-count').textContent = activeTournamentsCount;
+            
+            usersRef.once('value').then(snapshot => {
+                const users = snapshot.val();
+                const usersCount = users ? Object.keys(users).length : 0;
+                document.getElementById('users-count').textContent = usersCount;
+                hideLoading();
+            });
+        });
+    }
+    
+    // Recent Activity
+    function loadRecentActivity() {
+        activityRef.orderByChild('timestamp').limitToLast(10).on('value', (snapshot) => {
+            const activityDiv = document.getElementById('recent-activity');
+            const activities = snapshot.val();
+            
+            if (activities) {
+                let html = '<div class="activity-list">';
+                Object.values(activities).reverse().forEach(activity => {
+                    const time = new Date(activity.timestamp).toLocaleString();
+                    html += `
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas ${activity.icon}"></i>
+                            </div>
+                            <div class="activity-details">
+                                <div class="activity-title">${activity.title}</div>
+                                <div class="activity-time">${time}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                activityDiv.innerHTML = html;
+            } else {
+                activityDiv.innerHTML = '<p>No recent activity.</p>';
+            }
+        });
+    }
+    
+    // Image Upload Handler
+    tournamentThumbnail.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                thumbnailPreview.src = e.target.result;
+                thumbnailPreview.style.display = 'block';
+                thumbnailPlaceholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+            
+            // Upload to Firebase Storage
+            const storageRef = storage.ref(`tournament-thumbnails/${Date.now()}_${file.name}`);
+            storageRef.put(file).then((snapshot) => {
+                snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    thumbnailUrl.value = downloadURL;
+                    showNotification('success', 'Image Uploaded', 'Thumbnail uploaded successfully!');
+                });
+            }).catch((error) => {
+                showNotification('error', 'Upload Failed', 'Failed to upload thumbnail.');
+            });
+        }
+    });
+    
+    // Add Tournament Button
+    document.getElementById('add-tournament-btn').addEventListener('click', () => {
+        document.getElementById('add-tournament-section').style.display = 'block';
+        document.getElementById('add-tournament-section').scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    // Cancel Tournament Button
+    document.getElementById('cancel-tournament-btn').addEventListener('click', () => {
+        document.getElementById('add-tournament-section').style.display = 'none';
+        document.getElementById('add-tournament-form').reset();
+        thumbnailPreview.style.display = 'none';
+        thumbnailPlaceholder.style.display = 'block';
+        thumbnailUrl.value = '';
+    });
+    
+    // Add Tournament
+    document.getElementById('add-tournament-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('tournament-name').value;
+        const date = document.getElementById('tournament-date').value;
+        const description = document.getElementById('tournament-description').value;
+        const game = document.getElementById('tournament-game').value;
+        const type = document.getElementById('tournament-type').value;
+        const prize = document.getElementById('tournament-prize').value;
+        const thumbnail = thumbnailUrl.value;
+        
+        showLoading();
+        
+        tournamentsRef.push({
+            name,
+            date,
+            description,
+            game,
+            type,
+            prize,
+            thumbnail,
+            createdAt: new Date().toISOString()
+        }).then(() => {
+            hideLoading();
+            showNotification('success', 'Tournament Added', `${name} has been successfully added.`);
+            
+            // Add activity log
+            activityRef.push({
+                title: `New tournament "${name}" was created`,
+                icon: 'fa-trophy',
+                timestamp: new Date().toISOString()
+            });
+            
+            document.getElementById('add-tournament-form').reset();
+            thumbnailPreview.style.display = 'none';
+            thumbnailPlaceholder.style.display = 'block';
+            thumbnailUrl.value = '';
+            document.getElementById('add-tournament-section').style.display = 'none';
+        });
+    });
+    
+    // Load Tournaments
+    function loadTournaments() {
+        showLoading();
+        
+        tournamentsRef.on('value', (snapshot) => {
+            const list = document.getElementById('admin-tournaments-list');
+            const tournaments = snapshot.val();
+            
+            if (tournaments) {
+                list.innerHTML = '';
+                Object.keys(tournaments).reverse().forEach(key => {
+                    const t = tournaments[key];
+                    let participants = '';
+                    
+                    if (t.participants) {
+                        Object.values(t.participants).forEach(p => {
+                            participants += `
+                                <li>
+                                    <div class="participant-info">
+                                        <div class="participant-avatar">${p.name.charAt(0).toUpperCase()}</div>
+                                        <div>
+                                            <strong>${p.name}</strong> (${p.email || 'N/A'}) - ${p.team || 'No team'}
+                                        </div>
+                                    </div>
+                                    <button class="btn-danger btn-sm" onclick="removeParticipant('${key}', '${p.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </li>
+                            `;
+                        });
+                    } else {
+                        participants = '<li>No participants yet.</li>';
+                    }
+                    
+                    list.innerHTML += `
+                        <div class="tournament-entry">
+                            ${t.thumbnail ? `<img src="${t.thumbnail}" alt="${t.name}" class="tournament-thumbnail">` : ''}
+                            <div class="tournament-header">
+                                <div>
+                                    <h3>${t.name}</h3>
+                                    <p class="date">
+                                        <i class="fas fa-calendar"></i> 
+                                        ${new Date(t.date).toLocaleDateString()}
+                                    </p>
+                                    <p>
+                                        <i class="fas fa-gamepad"></i> 
+                                        ${t.game} | 
+                                        <i class="fas fa-users"></i> 
+                                        ${t.type} | 
+                                        <i class="fas fa-gift"></i> 
+                                        ${t.prize || 'No prize'}
+                                    </p>
+                                </div>
+                                <div class="tournament-actions">
+                                    <button class="btn-secondary" onclick="editTournament('${key}')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn-danger" onclick="deleteTournament('${key}')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                            <p>${t.description}</p>
+                            <h4>
+                                <i class="fas fa-users"></i> Participants 
+                                (${t.participants ? Object.keys(t.participants).length : 0})
+                            </h4>
+                            <ul class="participant-list">${participants}</ul>
+                        </div>
+                    `;
+                });
+                hideLoading();
+            } else {
+                list.innerHTML = '<p>No tournaments found.</p>';
+                hideLoading();
+            }
+        });
+    }
+    
+    // Load Users
+    function loadUsers() {
+        showLoading();
+        
+        usersRef.on('value', (snapshot) => {
+            const list = document.getElementById('all-users-list');
+            const users = snapshot.val();
+            
+            if (users) {
+                list.innerHTML = '';
+                Object.values(users).forEach(user => {
+                    list.innerHTML += `
+                        <div class="user-card">
+                            <div class="user-avatar">${user.name.charAt(0).toUpperCase()}</div>
+                            <div class="user-info">
+                                <h3>${user.name}</h3>
+                                <p>${user.email} | Team: ${user.team || 'N/A'} | Game ID: ${user.gameId || 'N/A'}</p>
+                                <p>Joined: ${new Date(user.timestamp).toLocaleString()}</p>
+                            </div>
+                            <div class="user-actions">
+                                <button class="btn-secondary" onclick="viewUser('${user.id}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="btn-danger" onclick="deleteUser('${user.id}')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                hideLoading();
+            } else {
+                list.innerHTML = '<p>No users registered yet.</p>';
+                hideLoading();
+            }
+        });
+    }
+    
+    // Show Notification
+    function showNotification(type, title, message) {
+        const notification = document.getElementById('notification');
+        const icon = notification.querySelector('i');
+        const titleEl = notification.querySelector('.notification-title');
+        const messageEl = notification.querySelector('.notification-message');
+        const closeBtn = notification.querySelector('.notification-close');
+        
+        notification.className = `notification ${type}`;
+        
+        // Set icon based on type
+        if (type === 'success') {
+            icon.className = 'fas fa-check-circle';
+        } else if (type === 'error') {
+            icon.className = 'fas fa-exclamation-circle';
+        } else if (type === 'warning') {
+            icon.className = 'fas fa-exclamation-triangle';
+        } else if (type === 'info') {
+            icon.className = 'fas fa-info-circle';
+        }
+        
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        
+        notification.classList.add('show');
+        
+        // Auto hide after 5 seconds
+        const hideTimeout = setTimeout(() => {
+            notification.classList.remove('show');
+        }, 5000);
+        
+        // Manual close
+        closeBtn.onclick = () => {
+            clearTimeout(hideTimeout);
+            notification.classList.remove('show');
+        };
+    }
+    
+    // Update Date/Time
+    function updateDateTime() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = now.toLocaleDateString(undefined, options);
+        const timeStr = now.toLocaleTimeString();
+        
+        document.getElementById('date-time').innerHTML = `
+            <i class="fas fa-calendar-alt"></i> ${dateStr} 
+            <i class="fas fa-clock"></i> ${timeStr}
+        `;
+    }
+    
+    // Initialize
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    
+    // Placeholder functions
+    function editTournament(id) {
+        showNotification('info', 'Edit Tournament', `Editing tournament with ID: ${id}`);
+    }
+    
+    function deleteTournament(id) {
+        if (confirm('Are you sure you want to delete this tournament?')) {
+            showLoading();
+            
+            tournamentsRef.child(id).remove().then(() => {
+                hideLoading();
+                showNotification('success', 'Tournament Deleted', 'The tournament has been successfully deleted.');
+                
+                // Add activity log
+                activityRef.push({
+                    title: `A tournament was deleted`,
+                    icon: 'fa-trash',
+                    timestamp: new Date().toISOString()
+                });
+            });
+        }
+    }
+    
+    function removeParticipant(tournamentId, participantId) {
+        if (confirm('Are you sure you want to remove this participant?')) {
+            showLoading();
+            
+            const participantRef = database.ref(`tournaments/${tournamentId}/participants/${participantId}`);
+            participantRef.remove().then(() => {
+                hideLoading();
+                showNotification('success', 'Participant Removed', 'The participant has been successfully removed.');
+            });
+        }
+    }
+    
+    function viewUser(id) {
+        showNotification('info', 'View User', `Viewing user with ID: ${id}`);
+    }
+    
+    function deleteUser(id) {
+        if (confirm('Are you sure you want to delete this user?')) {
+            showLoading();
+            
+            usersRef.child(id).remove().then(() => {
+                hideLoading();
+                showNotification('success', 'User Deleted', 'The user has been successfully deleted.');
+                
+                // Add activity log
+                activityRef.push({
+                    title: `A user was deleted`,
+                    icon: 'fa-user-minus',
+                    timestamp: new Date().toISOString()
+                });
+            });
+        }
+    }
+    
+    // Change Password Form
+    document.getElementById('change-password-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        
+        if (newPassword !== confirmPassword) {
+            showNotification('error', 'Password Mismatch', 'New passwords do not match.');
+            return;
+        }
+        
+        showLoading();
+        
+        // Simulate API call
+        setTimeout(() => {
+            hideLoading();
+            showNotification('success', 'Password Updated', 'Your password has been successfully updated.');
+            document.getElementById('change-password-form').reset();
+        }, 1000);
+    });
+    
+    // Theme Settings
+    document.getElementById('theme-select').addEventListener('change', (e) => {
+        const theme = e.target.value;
+        showNotification('success', 'Theme Applied', `The ${theme} theme has been applied.`);
+    });
+    
+    // User Search
+    document.getElementById('user-search').addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const userCards = document.querySelectorAll('.user-card');
+        
+        userCards.forEach(card => {
+            const name = card.querySelector('h3').textContent.toLowerCase();
+            const email = card.querySelector('p').textContent.toLowerCase();
+            
+            if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
+</body>
+
+</html>
+

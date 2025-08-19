@@ -1,0 +1,25 @@
+Create a complete working tournament app using only two HTML files:
+
+1. index.html → For users to:
+   - View all tournaments from Firebase Realtime Database.
+   - Join a selected tournament by entering their name and team.
+   - Display a list of participants after joining.
+
+2. admin.html → For admin to:
+   - Add a new tournament (Tournament Name, Date, Description).
+   - View all added tournaments.
+   - View participants under each tournament.
+   - Optionally           Database** for storing tournament data and participants.
+- Use **Firebase JavaScript SDK** (CDN version).
+- Include **all JavaScript and CSS inline** inside the HTML (no external files).
+- Use simple and clean UI with modern design (card-style or form layout).
+- Both pages must work fully and independently using Firebase.
+- No frameworks like React, Angular – just pure HTML, CSS, JS (with Firebase).
+
+🎯 Output:
+Give me:
+- Fully working `index.html` file
+- Fully working `admin.html` file
+
+Each file should be ready to run with just Firebase configuration added.
+ 
